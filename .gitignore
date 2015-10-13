@@ -1,0 +1,5 @@
+/TAGS
+*.o
+*.bin
+*.elf
+/firmware.ld
