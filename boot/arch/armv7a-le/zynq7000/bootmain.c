@@ -42,6 +42,24 @@ void mbr_bootmain(void) {
         while(1);
     }
     elf32hdr_t elf = *(elf32hdr_t *)partition_2;
+
+    elf32_phdr_t program_header = *(elf32_phdr_t *)(partition_2 + elf.e_phoff);
+
+    u32 offset = (u32)((program_header.p_offset >> 9) + pte_2);
+    u32 begin = (u32)(program_header.p_offset & 511);
+
+    volatile u8 *kernel = (void *)(elf.e_entry);
+
+    ret = sd_dma_spin_read((u32)kernel, 1, offset);
+    if (ret != 0) {
+        uart_spin_puts("ERROR: sd_read failed with error #");
+        puthex(ret);
+        while(1);
+    }
+
+    void (*kernel_entry)() = (void *)(kernel + begin);
+
+    kernel_entry();
+
     while(1);
 }
-
