@@ -31,7 +31,17 @@ void mbr_bootmain(void) {
         pte_2 <<= 8;
         pte_2 += mbr[462 + i];
     }
-    volatile u8 *pte_2_p = (void *)pte_2;
+    /* uart_spin_puts("PTE2:\n"); */
+    /* puthex(pte_2); */
+    volatile u8 *partition_2 = (void *)0x200000;
+    int ret;
+    ret = sd_dma_spin_read((u32)partition_2, 1, pte_2);
+    if (ret != 0) {
+        uart_spin_puts("ERROR: sd_read failed with error #");
+        puthex(ret);
+        while(1);
+    }
+    elf32hdr_t elf = *(elf32hdr_t *)partition_2;
     while(1);
 }
 
