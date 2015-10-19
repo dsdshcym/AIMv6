@@ -33,31 +33,46 @@ void mbr_bootmain(void) {
     }
     /* uart_spin_puts("PTE2:\n"); */
     /* puthex(pte_2); */
-    volatile u8 *partition_2 = (void *)0x200000;
+    volatile u8 *buf = (void *)0x110000;
     int ret;
-    ret = sd_dma_spin_read((u32)partition_2, 1, pte_2);
+    ret = sd_dma_spin_read((u32)buf, 1, pte_2);
     if (ret != 0) {
         uart_spin_puts("ERROR: sd_read failed with error #");
         puthex(ret);
         while(1);
     }
-    elf32hdr_t elf = *(elf32hdr_t *)partition_2;
-
-    elf32_phdr_t program_header = *(elf32_phdr_t *)(partition_2 + elf.e_phoff);
-
-    u32 offset = (u32)((program_header.p_offset >> 9) + pte_2);
-    u32 begin = (u32)(program_header.p_offset & 511);
-
-    volatile u8 *kernel = (void *)(elf.e_entry);
-
-    ret = sd_dma_spin_read((u32)kernel, 1, offset);
-    if (ret != 0) {
-        uart_spin_puts("ERROR: sd_read failed with error #");
-        puthex(ret);
-        while(1);
+    elf32hdr_t elf = *(elf32hdr_t *)buf;
+    u32 read_count = (elf.e_ehsize >> 9);
+    if ((elf.e_ehsize & 511) != 0) {
+        read_count++;
     }
+    sd_dma_spin_read((u32)buf, read_count, pte_2);
+    elf = *(elf32hdr_t *)buf;
 
-    void (*kernel_entry)() = (void *)(kernel + begin);
+    void (*kernel_entry)() = (void *)(elf.e_entry);
+
+    u16 phnum = elf.e_phnum;
+    elf32_phdr_t *ph = (elf32_phdr_t *)(buf + elf.e_phoff);
+
+    for (i = 0; i < phnum; i++) {
+        u32 filesz = (u32)(ph->p_filesz);
+        if (ph->p_type == PT_LOAD) {
+            u32 offset = (u32)((ph->p_offset >> 9) + pte_2);
+            u32 begin = (u32)(ph->p_offset & 511);
+            read_count = ((u32)(filesz) >> 9);
+            if ((filesz & 511) != 0) {
+                read_count++;
+            }
+            volatile u8 *ph_buf = (void *)(ph->p_vaddr - begin);
+            ret = sd_dma_spin_read((u32)ph_buf, read_count, offset);
+            if (ret != 0) {
+                uart_spin_puts("ERROR: sd_read failed with error #");
+                puthex(ret);
+                while(1);
+            }
+        }
+        ph += filesz;
+    }
 
     kernel_entry();
 
