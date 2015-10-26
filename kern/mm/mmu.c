@@ -45,6 +45,13 @@ void create_first_page() {
 
 void set_TTB() {
     uart_spin_puts("set_TTB\r\n");
+
+    asm volatile(
+                 "ldr r0, =TABLE_ADDR\n\t"
+                 "mcr p15, 0, r0, c2, c0, 0\n\t"
+                 );
+
+    uart_spin_puts("set_TTB Done\r\n");
 }
 
 void set_DOMAIN() {
