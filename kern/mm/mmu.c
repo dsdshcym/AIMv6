@@ -1,19 +1,46 @@
 #include <kernel.h>
 
 #define TTB_FLAG 0x5E2
-#define FRIST_TTB_VAL 0x155E6
+#define FIRST_TTB_VAL 0x155E6
 #define SP_ADDR 0x20000000
 #define SP_TOP 0x1F000000
 
 #define L2CACHE_CONTROL 0xF8F02100
 #define SCU_CONTROL 0xF8F00000
 
+uint SECTION_RANGE = 0x100000;
+
 void invalidate_TLB() {
     uart_spin_puts("invalidate_TLB\r\n");
 }
 
+void write_page(uint virtual_addr, uint physical_addr) {
+    uint tmp = virtual_addr >> 20;
+    uint addr = TABLE_ADDR + (tmp << 2);
+    tmp = (physical_addr >> 20) << 20;
+    out32(addr, (tmp + TTB_FLAG));
+}
+
 void create_first_page() {
-    uart_spin_puts("create_first_page\r\n");
+    uart_spin_puts("create_first_page Begin\r\n");
+
+    uint count = 0;
+    uint i;
+
+    for (i = 0; count < 4096; i += SECTION_RANGE, count++) {
+        write_page(i, i);
+    }
+
+    for (i = 0; i < INVALID_ADDR; i += SECTION_RANGE) {
+        write_page(i + KERN_BASE, i);
+    }
+
+    for (i = SP_TOP; i < SP_ADDR; i += SECTION_RANGE) {
+        write_page(i + KERN_BASE, i);
+    }
+    out32(TABLE_ADDR, FIRST_TTB_VAL);
+
+    uart_spin_puts("create_first_page Done\r\n");
 }
 
 void set_TTB() {
