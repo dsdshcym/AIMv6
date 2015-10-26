@@ -49,6 +49,7 @@ FIRMWARE_M4	=  firmware/arch/$(ARCH)/firmware.m4 \
 MBR_OBJS	=  boot/arch/$(ARCH)/$(MACH)/bootmain.o
 
 KERN_OBJS = kern/kernel.o \
+			 kern/mm/mmu.o \
 			 $(DRIVER_OBJS) \
 
 all: firmware.bin mbr.bin kernel.elf

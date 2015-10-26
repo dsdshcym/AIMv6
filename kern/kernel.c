@@ -1,5 +1,5 @@
-#include "kernel.h"
-#include "mmu.h"
+#include <kernel.h>
+#include <mmu.h>
 
 int main() {
     uart_spin_puts("Entering Kernel!\r\n");
