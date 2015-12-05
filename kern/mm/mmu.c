@@ -1,3 +1,7 @@
+/* This code is based on the work Chuming Lin has done
+   All credit goes to him
+*/
+
 #include <kernel.h>
 
 #define TTB_FLAG 0x5E2
