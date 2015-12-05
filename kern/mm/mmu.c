@@ -59,7 +59,8 @@ void set_TTB() {
     uart_spin_puts("set_TTB\r\n");
 
     asm volatile(
-                 "ldr r0, =TABLE_ADDR\n\t"
+                 "ldr r1, =TABLE_ADDR\n\t"
+                 "ldr r0, [r1]\n\t"
                  "mcr p15, 0, r0, c2, c0, 0\n\t"
                  );
 
