@@ -67,6 +67,15 @@ void set_DOMAIN() {
 
 void set_MMU() {
     uart_spin_puts("set_MMU\r\n");
+
+    asm volatile(
+                 "mrc p15, 0, r0, c1, c0, 0\n\t"
+                 "orr r0, r0, #0x1\n\t"
+                 "mcr p15, 0, r0, c1, c0, 0\n\t"
+                 "isb\n\t"
+                 );
+
+    uart_spin_puts("set_MMU Done\r\n");
 }
 
 void set_SCU() {
