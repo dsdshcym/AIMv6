@@ -13,12 +13,16 @@ uint SECTION_RANGE = 0x100000;
 void invalidate_TLB() {
     uart_spin_puts("invalidate_TLB\r\n");
 
+    /* armv7-a-r-manual.pdf::1497 */
     asm volatile(
                  "mov r0, #0\n\t"
+                 /* Invalidate entire instruction TLB */
                  "mcr p15, 0, r0, c8, c5, 0\n\t"
                  "isb \n\t"
+                 /* Invalidate entire data TLB */
                  "mcr p15, 0, r0, c8, c6, 0\n\t"
                  "isb \n\t"
+                 /* Invalidate entire unified TLB */
                  "mcr p15, 0, r0, c8, c7, 0\n\t"
                  "isb\n\t"
                  );
