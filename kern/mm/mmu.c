@@ -105,6 +105,18 @@ void set_SCU() {
 
 void set_caches() {
     uart_spin_puts("set_caches\r\n");
+
+    asm volatile(
+                 "ldr r1, =0x1804\n\t"
+                 "mrc p15, 0, r0, c1, c0, 0\n\t"
+                 "orr r0, r0, r1\n\t"
+                 "mrc p15, 0, r0, c1, c0, 0\n\t"
+                 "isb\n\t"
+                 );
+
+    out32(L2CACHE_CONTROL, 0x1);
+
+    uart_spin_puts("set_caches Done\r\n");
 }
 
 void enable_MMU() {
