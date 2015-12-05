@@ -123,8 +123,8 @@ void update_PC() {
     uart_spin_puts("update_PC\r\n");
 
     asm volatile(
-                 "ldr r1, =KERN_BASE\n\t"
-                 "ldr r0, [r1]\n\t"
+                 "ldr r0, =KERN_BASE\n\t"
+                 "ldr r1, [r0]\n\t"
                  "add pc, pc, r1\n\t"
                  "isb\n\t"
                  );
@@ -136,8 +136,8 @@ void update_SP() {
     uart_spin_puts("update_SP\r\n");
 
     asm volatile(
-                 "ldr r1, =KERN_BASE\n\t"
-                 "ldr r0, [r1]\n\t"
+                 "ldr r0, =KERN_BASE\n\t"
+                 "ldr r1, [r0]\n\t"
                  "add sp, sp, r1\n\t"
                  "isb\n\t"
                  );
