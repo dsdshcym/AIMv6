@@ -119,6 +119,19 @@ void set_caches() {
     uart_spin_puts("set_caches Done\r\n");
 }
 
+void update_PC() {
+    uart_spin_puts("update_PC\r\n");
+
+    asm volatile(
+                 "ldr r1, =KERN_BASE\n\t"
+                 "ldr r0, [r1]\n\t"
+                 "add pc, pc, r1\n\t"
+                 "isb\n\t"
+                 );
+
+    uart_spin_puts("update_PC Done\r\n");
+}
+
 void enable_MMU() {
     create_first_page();
 
@@ -133,4 +146,7 @@ void enable_MMU() {
     set_SCU();
 
     set_caches();
+
+    update_PC();
+
 }
