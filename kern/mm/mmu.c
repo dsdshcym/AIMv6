@@ -93,6 +93,10 @@ void set_MMU() {
 
 void set_SCU() {
     uart_spin_puts("set_SCU\r\n");
+
+    out32(SCU_CONTROL, 0x3);
+
+    uart_spin_puts("set_SCU Done\r\n");
 }
 
 void set_caches() {
