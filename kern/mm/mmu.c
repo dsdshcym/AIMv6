@@ -12,6 +12,18 @@ uint SECTION_RANGE = 0x100000;
 
 void invalidate_TLB() {
     uart_spin_puts("invalidate_TLB\r\n");
+
+    asm volatile(
+                 "mov r0, #0\n\t"
+                 "mcr p15, 0, r0, c8, c5, 0\n\t"
+                 "isb \n\t"
+                 "mcr p15, 0, r0, c8, c6, 0\n\t"
+                 "isb \n\t"
+                 "mcr p15, 0, r0, c8, c7, 0\n\t"
+                 "isb\n\t"
+                 );
+
+    uart_spin_puts("invalidate_TLB Done\r\n");
 }
 
 void write_page(uint virtual_addr, uint physical_addr) {
