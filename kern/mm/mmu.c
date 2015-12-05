@@ -132,6 +132,19 @@ void update_PC() {
     uart_spin_puts("update_PC Done\r\n");
 }
 
+void update_SP() {
+    uart_spin_puts("update_SP\r\n");
+
+    asm volatile(
+                 "ldr r1, =KERN_BASE\n\t"
+                 "ldr r0, [r1]\n\t"
+                 "add sp, sp, r1\n\t"
+                 "isb\n\t"
+                 );
+
+    uart_spin_puts("update_SP Done\r\n");
+}
+
 void enable_MMU() {
     create_first_page();
 
@@ -149,4 +162,5 @@ void enable_MMU() {
 
     update_PC();
 
+    update_SP();
 }
