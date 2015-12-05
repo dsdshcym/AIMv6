@@ -145,6 +145,18 @@ void update_SP() {
     uart_spin_puts("update_SP Done\r\n");
 }
 
+void clear_lower_address() {
+    uart_spin_puts("clear_lower_address\r\n");
+
+    uint i;
+    for (i = 0; i < INVALID_ADDR; i += SECTION_RANGE) {
+        uint offset = (i >> 20) << 2;
+        out32(TABLE_ADDR + offset, 0);
+    }
+
+    uart_spin_puts("clear_lower_address Done\r\n");
+}
+
 void enable_MMU() {
     create_first_page();
 
@@ -163,4 +175,6 @@ void enable_MMU() {
     update_PC();
 
     update_SP();
+
+    clear_lower_address();
 }
