@@ -6,9 +6,9 @@
 #include <drivers/sd/sd-zynq7000.h>
 #include <asm/io.h>
 
-uint KERN_BASE    = 0x80000000;
-uint TABLE_ADDR   = 0X00014000;
-uint KERNEL_ADDR  = 0X00200000;
-uint INVALID_ADDR = 0X00800000;
+extern uint KERN_BASE;
+extern uint TABLE_ADDR;
+extern uint KERNEL_ADDR;
+extern uint INVALID_ADDR;
 
 #endif

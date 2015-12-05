@@ -1,6 +1,11 @@
 #include <kernel.h>
 #include <mmu.h>
 
+uint KERN_BASE    = 0x80000000;
+uint TABLE_ADDR   = 0X00014000;
+uint KERNEL_ADDR  = 0X00200000;
+uint INVALID_ADDR = 0X00800000;
+
 int main() {
     uart_spin_puts("Entering Kernel!\r\n");
 
