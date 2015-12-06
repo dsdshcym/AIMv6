@@ -52,6 +52,7 @@ KERN_OBJS = kern/kernel.o \
 			 kern/mm/mmu.o \
 			 kern/mm/memory.o \
 			 $(DRIVER_OBJS) \
+			 kern/debug/kernel_test.o \
 
 all: firmware.bin mbr.bin kernel.elf
 
