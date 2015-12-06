@@ -50,6 +50,7 @@ MBR_OBJS	=  boot/arch/$(ARCH)/$(MACH)/bootmain.o
 
 KERN_OBJS = kern/kernel.o \
 			 kern/mm/mmu.o \
+			 kern/mm/memory.o \
 			 $(DRIVER_OBJS) \
 
 all: firmware.bin mbr.bin kernel.elf

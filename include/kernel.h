@@ -6,6 +6,8 @@
 #include <drivers/sd/sd-zynq7000.h>
 #include <asm/io.h>
 
+#define NULL (void*)0
+
 extern uint KERN_BASE;
 extern uint TABLE_ADDR;
 extern uint KERNEL_ADDR;
