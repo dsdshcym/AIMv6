@@ -1,12 +1,20 @@
 #include <kernel.h>
 
-typedef struct {
+#define MIN_ADDR 0x800000
+#define MAX_ADDR 0X1F000000
+#define KSIZE    4096
+
+struct run {
     uint size;
     struct run* next;
-} run;
+};
+
+typedef struct run run;
 
 run* free_head = NULL;
 
 void init_mem() {
-    uart_spin_puts("Initializing Memory.\r\n");
+    free_head = (run*)MIN_ADDR;
+    free_head->size = MAX_ADDR - MIN_ADDR;
+    free_head->next = NULL;
 }
